@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <!-- 控制台 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!--<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger.%M:%L - %msg%n</pattern>-->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %caller{1} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="info"/>
+
+    <logger name="cn.net.wujun" level="debug">
+        <appender-ref ref="console"/>
+    </logger>
+</configuration>
