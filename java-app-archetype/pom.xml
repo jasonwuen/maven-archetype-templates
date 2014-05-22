@@ -2,14 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>maven-archetype-templates</artifactId>
-		<groupId>cn.net.wujun.maven.archetypes</groupId>
-		<version>1.0-SNAPSHOT</version>
-	</parent>
 
 	<groupId>cn.net.wujun.maven.archetypes</groupId>
 	<artifactId>java-app-archetype</artifactId>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>java-app-archetype</name>
@@ -28,6 +24,13 @@
 		</developer>
 	</developers>
 
+	<scm>
+		<url>https://github.com/jasonwuen/maven-archetype-templates</url>
+		<connection>scm:git:git@github.com:jasonwuen/maven-archetype-templates.git</connection>
+		<developerConnection>scm:git:git@github.com:jasonwuen/maven-archetype-templates.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.6</jdk.version>
@@ -36,6 +39,8 @@
 		<logback.version>1.0.13</logback.version>
 
 		<junit.version>4.11</junit.version>
+
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 
 	</properties>
 
@@ -66,9 +71,72 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- TEST end -->
+
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
-		<finalName>java-app-archetype</finalName>
+		<finalName>${project.artifactId}-${project.version}-r${timestamp}</finalName>
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.3</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<doCheck>true</doCheck>
+					<doUpdate>true</doUpdate>
+					<timestampFormat>{0,date,yyyyMMddHHmmss}</timestampFormat>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestEntries>
+							<Implementation-Build-Version>${scmBranch}-${buildNumber}</Implementation-Build-Version>
+							<Built-At>${maven.build.timestamp}</Built-At>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5</version>
+			</plugin>
+		</plugins>
 	</build>
+
 </project>
